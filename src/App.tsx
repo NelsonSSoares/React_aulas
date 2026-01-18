@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 
 function App() {
@@ -9,17 +9,32 @@ function App() {
     task: ''
   })
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const firstRender = useRef(true);
+
   useEffect(()=>{
     const tasksLoaded = localStorage.getItem("Tarefas");
     if(tasksLoaded){
-      setTasks(JSON.parse(tasksLoaded))
+      setTasks(JSON.parse(tasksLoaded));
     }
     console.log(tasksLoaded);
     
   },[]);
 
+  useEffect(()=>{
+    if(firstRender.current){
+      firstRender.current = false
+      return
+    }
+  
+    localStorage.setItem("Tarefas", JSON.stringify(tasks));
+  },[tasks])
+
 
   function handleRegister(){
+    inputRef.current?.focus();
+    
+
     if(!input){
       alert('Preencha sua trefa')
       return
@@ -31,8 +46,8 @@ function App() {
     }
     setTasks(tasks => [...tasks, input])
     setInput("")
-    localStorage.setItem("Tarefas", JSON.stringify([...tasks, input]));
-
+    //localStorage.setItem("Tarefas", JSON.stringify([...tasks, input]));
+    
   }
 
 
@@ -46,13 +61,13 @@ function App() {
       task: ''
     });
     setInput('');
-    localStorage.setItem("Tarefas", JSON.stringify(allTasks));
+//    localStorage.setItem("Tarefas", JSON.stringify(allTasks));
   }
 
   function handleDelete(item: string){
       const removetask = tasks.filter(task => task !== item)
       setTasks(removetask);
-      localStorage.setItem("Tarefas", JSON.stringify(removetask));
+//      localStorage.setItem("Tarefas", JSON.stringify(removetask));
   }
   function handleEdit(item : string){
     setInput(item)
@@ -65,7 +80,9 @@ function App() {
   return (
     <div>
       <h1>Lista de Tarefas</h1>
-      <input type="text"
+      <input 
+        ref={inputRef}
+        type="text"
         placeholder='Digite o nome da tarefa'
         value={input}
         onChange={(e) => setInput(e.target.value)} />
@@ -83,4 +100,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
