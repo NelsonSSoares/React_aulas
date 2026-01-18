@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
@@ -8,6 +8,15 @@ function App() {
     enabled: false,
     task: ''
   })
+
+  useEffect(()=>{
+    const tasksLoaded = localStorage.getItem("Tarefas");
+    if(tasksLoaded){
+      setTasks(JSON.parse(tasksLoaded))
+    }
+    console.log(tasksLoaded);
+    
+  },[]);
 
 
   function handleRegister(){
@@ -22,7 +31,10 @@ function App() {
     }
     setTasks(tasks => [...tasks, input])
     setInput("")
+    localStorage.setItem("Tarefas", JSON.stringify([...tasks, input]));
+
   }
+
 
   function handleSafeEdit(){
     const findIndex = tasks.findIndex(task => task === editTask.task);
@@ -34,11 +46,13 @@ function App() {
       task: ''
     });
     setInput('');
+    localStorage.setItem("Tarefas", JSON.stringify(allTasks));
   }
 
   function handleDelete(item: string){
       const removetask = tasks.filter(task => task !== item)
-      setTasks(removetask)
+      setTasks(removetask);
+      localStorage.setItem("Tarefas", JSON.stringify(removetask));
   }
   function handleEdit(item : string){
     setInput(item)
