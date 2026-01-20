@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import './App.css'
 
 function App() {
@@ -77,6 +77,10 @@ function App() {
     });
   }
 
+  const totalTask = useMemo(()=>{
+    return tasks.length
+  },[tasks]);
+
   return (
     <div>
       <h1>Lista de Tarefas</h1>
@@ -86,9 +90,10 @@ function App() {
         placeholder='Digite o nome da tarefa'
         value={input}
         onChange={(e) => setInput(e.target.value)} />
-      <hr/>
       <button onClick={handleRegister}>{editTask.enabled ?"Atualizar Tarefa": "Adicionar Tarefa"}</button>
-
+      <hr/>
+      <strong>Você tem {totalTask} tarefas</strong>
+      <br/><br/>
       {tasks.map((item, index) =>(
         <section key={index}>
           <span>{item}</span>
