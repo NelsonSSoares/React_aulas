@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import './App.css'
 
 function App() {
@@ -30,8 +30,24 @@ function App() {
     localStorage.setItem("Tarefas", JSON.stringify(tasks));
   },[tasks])
 
+  const handleRegister = useCallback(()=>{
+     inputRef.current?.focus();
+    
 
-  function handleRegister(){
+    if(!input){
+      alert('Preencha sua trefa')
+      return
+    }
+
+    if(editTask.enabled){
+      handleSaveEdit();
+      return
+    }
+    setTasks(tasks => [...tasks, input])
+    setInput("")
+  },[input, tasks])
+
+  /* function handleRegister(){
     inputRef.current?.focus();
     
 
@@ -48,10 +64,10 @@ function App() {
     setInput("")
     //localStorage.setItem("Tarefas", JSON.stringify([...tasks, input]));
     
-  }
+  } */
 
 
-  function handleSafeEdit(){
+  function handleSaveEdit(){
     const findIndex = tasks.findIndex(task => task === editTask.task);
     const allTasks = [...tasks];
     allTasks[findIndex] = input;
